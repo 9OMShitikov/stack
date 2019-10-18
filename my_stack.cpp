@@ -20,67 +20,69 @@ my_stack<T>::my_stack():
 template <class T>
 my_stack<T>::~my_stack() {
     CHECK
+    for (int i = 0; i < buff->size; ++i) {
+        ~(buff->buff[i]);
+    }
     free(buff);
 }
 
 template <class T>
 void my_stack<T>::dump (int err_code, const char file[], int line, const char function[]) {
-    std::cout<<"Problem!!! From "<<file<<", line "<<line<<", "<<function<<std::endl;
-    std::cout<<"Problem in my_stack<T> where T = ";
+    std::cerr<<"Problem!!! From "<<file<<", line "<<line<<", "<<function<<std::endl;
+    std::cerr<<"Problem in my_stack<T> where T = ";
     const char* str = typeid(T).name();
     int pos = 0;
     while ('0' <= str[pos] && str[pos] <= '9') ++pos;
-    std::cout<<str + pos;
-    std::cout<<std::endl;
+    std::cerr<<str + pos;
+    std::cerr<<std::endl;
 
     if (err_code == buff_pointer_broken) {
-        std::cout<<"Buffer pointer is broken"<<std::endl;
-        std::cout<<"First canary = "<<first_canary;
-        if (first_canary == 265) std::cout<<"(alive)."<<std::endl;
-        else std::cout<<"(dead)."<<std::endl;
-        std::cout<<"Second canary = "<<second_canary;
-        if (second_canary == 265) std::cout<<"(alive)."<<std::endl;
-        else std::cout<<"(dead)."<<std::endl;
-        std::cout<<"Buffer pointer is "<<buff<<std::endl;
+        std::cerr<<"Buffer pointer is broken"<<std::endl;
+        std::cerr<<"First canary = "<<first_canary;
+        if (first_canary == 265) std::cerr<<"(alive)."<<std::endl;
+        else std::cerr<<"(dead)."<<std::endl;
+        std::cerr<<"Second canary = "<<second_canary;
+        if (second_canary == 265) std::cerr<<"(alive)."<<std::endl;
+        else std::cerr<<"(dead)."<<std::endl;
+        std::cerr<<"Buffer pointer is "<<buff<<std::endl;
     }
     else if (err_code == sizes_broken) {
-        std::cout<<"Sizes are broken"<<std::endl;
-        std::cout<<"First buff canary = "<<buff->first_canary;
-        if (buff->first_canary == 265) std::cout<<"(alive)."<<std::endl;
-        else std::cout<<"(dead)."<<std::endl;
-        std::cout<<"Second buff canary = "<<*(reinterpret_cast<int*>(buff) + 4 * 6 + 4 + buff->buff_size * sizeof(T));
-        if (*second_canary_ptr() == 265) std::cout<<"(alive)."<<std::endl;
-        else std::cout<<"(dead)."<<std::endl;
-        std::cout<<"Buffer pointer is "<<buff<<std::endl;
-        std::cout<<"size values:"<<std::endl;
-        std::cout<<buff->size<<"(original) "<<buff->size_copy<<"(copy)"<<std::endl;
-        std::cout<<"buff_size values:"<<std::endl;
-        std::cout<<buff->buff_size<<"(original) "<<buff->buff_size_copy<<"(copy)"<<std::endl;
+        std::cerr<<"Sizes are broken"<<std::endl;
+        std::cerr<<"First buff canary = "<<buff->first_canary;
+        if (buff->first_canary == 265) std::cerr<<"(alive)."<<std::endl;
+        else std::cerr<<"(dead)."<<std::endl;
+        std::cerr<<"Second buff canary = "<<*(reinterpret_cast<int*>(buff) + 4 * 6 + 4 + buff->buff_size * sizeof(T));
+        if (*second_canary_ptr() == 265) std::cerr<<"(alive)."<<std::endl;
+        else std::cerr<<"(dead)."<<std::endl;
+        std::cerr<<"Buffer pointer is "<<buff<<std::endl;
+        std::cerr<<"size values:"<<std::endl;
+        std::cerr<<buff->size<<"(original) "<<buff->size_copy<<"(copy)"<<std::endl;
+        std::cerr<<"buff_size values:"<<std::endl;
+        std::cerr<<buff->buff_size<<"(original) "<<buff->buff_size_copy<<"(copy)"<<std::endl;
     }
     else if (err_code == buff_broken) {
-        std::cout<<"Buff is broken"<<std::endl;
-        std::cout<<"First buff canary = "<<buff->first_canary;
-        if (buff->first_canary == 265) std::cout<<"(alive)."<<std::endl;
-        else std::cout<<"(dead)."<<std::endl;
-        std::cout<<"Second buff canary = "<<*(reinterpret_cast<int*>(buff) + 4 * 6 + 1+ 4 + buff->buff_size * sizeof(T));
-        if (*second_canary_ptr() == 265) std::cout<<"(alive)."<<std::endl;
-        else std::cout<<"(dead)."<<std::endl;
-        std::cout<<"Buffer pointer is "<<buff<<std::endl;
-        std::cout<<"size value:"<<std::endl;
-        std::cout<<buff->size<<std::endl;
-        std::cout<<"buff_size value:"<<std::endl;
-        std::cout<<buff->buff_size<<std::endl;
-        std::cout<<"Buffer hash last value: "<<buff->hsh<<std::endl;
-        std::cout<<"Buffer hash      value: "<<get_hash(reinterpret_cast<char*>(&(buff->buff)), buff->size * sizeof(T))<<std::endl;
-        std::cout<<"Buffer:"<<std::endl;
+        std::cerr<<"Buff is broken"<<std::endl;
+        std::cerr<<"First buff canary = "<<buff->first_canary;
+        if (buff->first_canary == 265) std::cerr<<"(alive)."<<std::endl;
+        else std::cerr<<"(dead)."<<std::endl;
+        std::cerr<<"Second buff canary = "<<*(reinterpret_cast<int*>(buff) + 4 * 6 + 1+ 4 + buff->buff_size * sizeof(T));
+        if (*second_canary_ptr() == 265) std::cerr<<"(alive)."<<std::endl;
+        else std::cerr<<"(dead)."<<std::endl;
+        std::cerr<<"Buffer pointer is "<<buff<<std::endl;
+        std::cerr<<"size value:"<<std::endl;
+        std::cerr<<buff->size<<std::endl;
+        std::cerr<<"buff_size value:"<<std::endl;
+        std::cerr<<buff->buff_size<<std::endl;
+        std::cerr<<"Buffer hash last value: "<<buff->hsh<<std::endl;
+        std::cerr<<"Buffer hash      value: "<<get_hash(reinterpret_cast<char*>(&(buff->buff)), buff->size * sizeof(T))<<std::endl;
+        std::cerr<<"Buffer:"<<std::endl;
         for (int i = 0; i < buff->buff_size; ++i) {
-            if (i < buff->size) std::cout<<"*";
-            std::cout<<"buff["<<i<<"] = "<<buff->buff[i]<<std::endl;
+            if (i < buff->size) std::cerr<<"*";
+            std::cerr<<"buff["<<i<<"] = "<<buff->buff[i]<<std::endl;
         }
     }
-    else std::cout<<"Unknown error"<<std::endl;
+    else std::cerr<<"Unknown error"<<std::endl;
     throw std::exception();
-    std::cout<<std::endl;
 }
 
 template <class T>
@@ -133,6 +135,7 @@ bool my_stack<T>::pop_back() {
     CHECK
     if (buff->size <= 0) return 0;
     buff->size--;
+    ~(buff->buff[buff->size]);
     if (buff->size * 2 >= 4 && buff->size * 4 < buff->buff_size) {
         buff->buff_size = buff->size * 2;
         buff = (stack_buffer*) realloc(buff, 4 * 6 + 1 + 4 + buff->buff_size * sizeof(T));
